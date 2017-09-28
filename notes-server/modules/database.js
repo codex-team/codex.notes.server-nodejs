@@ -7,7 +7,7 @@ let mongoClient = mongodb.MongoClient;
 let mongo = (function () {
     let connection = mongoClient.connect(config.mongodb.connection);
 
-    let getCollection = function (c) {
+    let getCollection = async function (c) {
         return connection.then(function (db) {
             return db.collection(c);
         });
@@ -20,14 +20,14 @@ let mongo = (function () {
             });
     };
 
-    let findOne = function (c, object) {
+    let findOne = async function (c, object) {
         return getCollection(c)
             .then(function (collection) {
                 return collection.findOne(object);
             });
     };
 
-    let find = function (c, query, sort) {
+    let find = async function (c, query, sort) {
         return getCollection(c)
             .then(function (collection) {
                 let cursor = collection.find(query);
@@ -39,7 +39,7 @@ let mongo = (function () {
             });
     };
 
-    let updateOne = function (c, query, update) {
+    let updateOne = async function (c, query, update) {
         return getCollection(c)
             .then(function (collection) {
                 return collection.updateOne(query, update);
@@ -60,7 +60,7 @@ let mongo = (function () {
      Omit to use the default write concern.
      * @returns {Promise.<TResult>}
      */
-    let updateMany = function (c, query, update, options) {
+    let updateMany = async function (c, query, update, options) {
         return getCollection(c)
             .then(function (collection) {
                 return collection.updateMany(query, update, options);
@@ -76,7 +76,7 @@ let mongo = (function () {
      *                (see https://docs.mongodb.com/manual/reference/operator/aggregation/interface/)
      * @returns {Promise.<TResult>}
      */
-    let aggregation = function (c, query) {
+    let aggregation = async function (c, query) {
         return getCollection(c)
             .then(function (collection) {
                 return collection.aggregate(query).toArray();
@@ -90,7 +90,7 @@ let mongo = (function () {
      * @param query
      * @returns {Promise.<TResult>}
      */
-    let remove = function (c, query) {
+    let remove = async function (c, query) {
         return getCollection(c)
             .then(function (collection) {
                 return collection.remove(query);

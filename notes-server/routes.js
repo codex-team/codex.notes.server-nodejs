@@ -3,7 +3,7 @@
 module.exports = function(app) {
     let user = require('./controllers/user');
 
-    app.route('/users/create')
+    app.route('/user/create')
         .get(user.create);
 
 };
