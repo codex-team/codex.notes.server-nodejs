@@ -21,7 +21,8 @@ module.exports = function () {
 
         let user = {
             'password': passwordHashed,
-            'ip': ip
+            'ip': ip,
+            'directories': []
         };
 
         try {
@@ -38,17 +39,15 @@ module.exports = function () {
         }
     };
 
-    let validate = async function (uid, password) {
+    let validate = async function (userObject, password) {
         try {
-            // TODO: validate if there can be mongoDb injection in uid parameter
-            let user = await get(uid);
-            if (!user) {
+            if (!userObject) {
                 return 0;
             }
 
-            let checkHash = auth.generateHash(password, user.password.localSalt);
+            let checkHash = auth.generateHash(password, userObject.password.localSalt);
 
-            return user.password.hash === checkHash.hash;
+            return userObject.password.hash === checkHash.hash;
         }
         catch (err) {
             console.log('error', 'Cannot validate user because of ', err);
@@ -56,10 +55,28 @@ module.exports = function () {
         }
     };
 
+    let getDirectory = function (userObject, did) {
+        return userObject.directories.find(o => o.did === did);
+    };
+
+    let addDirectory = async function (userObject, did) {
+        if (getDirectory(userObject, did)) {
+            console.log("directory exists", did);
+            return 0;
+        }
+        else {
+            userObject.directories.push(did);
+            await mongo.updateOne(collection, {'_id': userObject._id}, userObject);
+            return 1;
+        }
+    };
+
     return {
         create: create,
         get: get,
-        validate: validate
+        validate: validate,
+        getDirectory: getDirectory,
+        addDirectory: addDirectory
     }
 
 }();

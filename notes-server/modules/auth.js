@@ -19,6 +19,13 @@ module.exports = (function () {
         return Math.random().toString(36).slice(-size);
     };
 
+    let validateCredentials = function (userId, password) {
+        if (!userId || !password) {
+            return 0;
+        }
+
+    };
+
     return {
         generateHash: generateHash,
         generatePassword: generatePassword

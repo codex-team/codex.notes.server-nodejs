@@ -6,25 +6,16 @@ let mongo = require('../modules/database');
 
 module.exports = function () {
 
-    let create = async function (ip, password) {
-        let passwordHashed = auth.generateHash(password);
-
-        let user = {
-            'password': passwordHashed,
-            'ip': ip
-        };
-
+    let create = async function (uid) {
         try {
-            let result = await mongo.insertOne(collection, user);
-            let insertedUser = result.ops[0];
-            console.log('Register new user with ID: ' + insertedUser._id);
-
-            return {
-                uid: insertedUser._id
-            };
+            let directoryID = auth.generatePassword();
+            let collectionName = uid + ":" + directoryID;
+            let result = await mongo.createCollection(collectionName);
+            return directoryID;
         }
         catch (err) {
             console.log('error', 'Cannot insert user because of ', err);
+            return;
         }
     };
 

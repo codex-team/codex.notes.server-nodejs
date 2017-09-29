@@ -18,32 +18,15 @@ module.exports = function() {
         let newUser = await user.create(ip, password);
 
         if (newUser) {
-            res.send({'result': 'success', 'data': {'user_id': newUser.uid}})
+            res.send({'result': 'success', 'data': {'user_id': newUser.uid.toString()}});
         }
         else {
-            res.send({'result': 'error'})
-        }
-    };
-
-    let validate = async function (req, res) {
-        let uid = req.params.userID,
-            password = req.body.password;
-
-        if (!(uid || password)) {
-            return res.send({'result': 'error', 'message': 'POST field user_id or password is empty'});
-        }
-
-        if (await user.validate(uid, password)) {
-            res.send({'result': 'success'})
-        }
-        else {
-            res.send({'result': 'error'})
+            res.send({'result': 'error'});
         }
     };
 
     return {
-        create: create,
-        validate: validate
+        create: create
     }
 
 }();

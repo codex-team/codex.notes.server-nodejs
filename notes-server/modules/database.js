@@ -97,6 +97,12 @@ let mongo = (function () {
             });
     };
 
+    let createCollection = async function (name) {
+        return connection.then(function (db) {
+            return db.createCollection(name);
+        });
+    };
+
     return {
         findOne : findOne,
         insertOne : insertOne,
@@ -105,7 +111,8 @@ let mongo = (function () {
         aggregation: aggregation,
         updateOne: updateOne,
         updateMany: updateMany,
-        remove: remove
+        remove: remove,
+        createCollection: createCollection
     };
 })();
 
