@@ -26,7 +26,7 @@ module.exports = function() {
     };
 
     let validate = async function (req, res) {
-        let uid = req.body.user_id,
+        let uid = req.params.userID,
             password = req.body.password;
 
         if (!(uid || password)) {

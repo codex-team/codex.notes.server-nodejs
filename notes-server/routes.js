@@ -6,7 +6,7 @@ module.exports = function(app) {
     app.route('/user/create')
         .post(user.create);
 
-    app.route('/user/validate')
+    app.route('/user/:userID/validate')
         .post(user.validate)
 
 };

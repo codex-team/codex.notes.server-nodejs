@@ -8,7 +8,12 @@ module.exports = function () {
     const collection = collections.USERS;
 
     let get = async function (id) {
-        return mongo.findOne(collection, {_id: mongo.ObjectId(id)});
+        try {
+            return await mongo.findOne(collection, {_id: mongo.ObjectId(id)});
+        }
+        catch (err) {
+            return;
+        }
     };
 
     let create = async function (ip, password) {
@@ -36,7 +41,7 @@ module.exports = function () {
     let validate = async function (uid, password) {
         try {
             // TODO: validate if there can be mongoDb injection in uid parameter
-            let user = await mongo.findOne(collection, {'_id': mongo.ObjectId(uid)});
+            let user = await get(uid);
             if (!user) {
                 return 0;
             }
