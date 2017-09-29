@@ -2,12 +2,16 @@ let Crypto = require('crypto');
 
 module.exports = (function () {
     /* Create sha256 hash for inputString */
-    let generateHash = function (inputString) {
-        let string = inputString + process.env.SALT;
+    let generateHash = function (inputString, localSalt="") {
+        // TODO: process.env.SALT
+        const globalSalt = "salt";
 
-        let hash = Crypto.createHash('sha256').update(string, 'utf8').digest('hex');
+        if (!localSalt) {
+            localSalt = generatePassword();
+        }
+        let hash = Crypto.createHmac('sha256', globalSalt + localSalt).update(inputString.toString()).digest('hex');
 
-        return hash;
+        return {hash: hash, localSalt: localSalt};
     };
 
     /* Generate 8 symbols password */

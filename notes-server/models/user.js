@@ -11,9 +11,8 @@ module.exports = function () {
         return mongo.findOne(collection, {_id: mongo.ObjectId(id)});
     };
 
-    let create = async function (ip) {
-        let password = auth.generatePassword(),
-            passwordHashed = auth.generateHash(password);
+    let create = async function (ip, password) {
+        let passwordHashed = auth.generateHash(password);
 
         let user = {
             'password': passwordHashed,
@@ -26,8 +25,7 @@ module.exports = function () {
             console.log('Register new user with ID: ' + insertedUser._id);
 
             return {
-                uid: insertedUser._id,
-                password: password
+                uid: insertedUser._id
             };
         }
         catch (err) {
@@ -35,9 +33,28 @@ module.exports = function () {
         }
     };
 
+    let validate = async function (uid, password) {
+        try {
+            // TODO: validate if there can be mongoDb injection in uid parameter
+            let user = await mongo.findOne(collection, {'_id': mongo.ObjectId(uid)});
+            if (!user) {
+                return 0;
+            }
+
+            let checkHash = auth.generateHash(password, user.password.localSalt);
+
+            return user.password.hash === checkHash.hash;
+        }
+        catch (err) {
+            console.log('error', 'Cannot validate user because of ', err);
+            return 0;
+        }
+    };
+
     return {
         create: create,
-        get: get
+        get: get,
+        validate: validate
     }
 
 }();
