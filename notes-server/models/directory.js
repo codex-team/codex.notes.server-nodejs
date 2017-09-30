@@ -9,7 +9,7 @@ module.exports = function () {
     let create = async function (uid) {
         try {
             let directoryID = auth.generatePassword();
-            let collectionName = uid + ":" + directoryID;
+            let collectionName = "dir:" + uid + ":" + directoryID;
             let result = await mongo.createCollection(collectionName);
             return directoryID;
         }

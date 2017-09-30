@@ -5,11 +5,11 @@ let auth = require('../modules/auth');
 let mongo = require('../modules/database');
 
 module.exports = function () {
-    const collection = collections.USERS;
 
     let get = async function (id) {
         try {
-            return await mongo.findOne(collection, {_id: mongo.ObjectId(id)});
+            let userCollection = "user:" + id;
+            return await mongo.findOne(userCollection, {});
         }
         catch (err) {
             return;
@@ -17,21 +17,24 @@ module.exports = function () {
     };
 
     let create = async function (ip, password) {
-        let passwordHashed = auth.generateHash(password);
+        let userID = auth.generatePassword(),
+            passwordHashed = auth.generateHash(password),
+            userCollection = "user:" + userID;
 
         let user = {
+            'user_id': userID,
             'password': passwordHashed,
             'ip': ip,
             'directories': []
         };
 
         try {
-            let result = await mongo.insertOne(collection, user);
+            let result = await mongo.insertOne(userCollection, user);
             let insertedUser = result.ops[0];
-            console.log('Register new user with ID: ' + insertedUser._id);
+            console.log('Register new user with ID: ' + userID);
 
             return {
-                uid: insertedUser._id
+                uid: userID
             };
         }
         catch (err) {
@@ -60,13 +63,14 @@ module.exports = function () {
     };
 
     let addDirectory = async function (userObject, did) {
+        let userCollection = "user:" + userObject.user_id;
         if (getDirectory(userObject, did)) {
             console.log("directory exists", did);
             return 0;
         }
         else {
             userObject.directories.push(did);
-            await mongo.updateOne(collection, {'_id': userObject._id}, userObject);
+            await mongo.updateOne(userCollection, {}, userObject);
             return 1;
         }
     };

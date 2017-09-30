@@ -22,6 +22,8 @@ module.exports = function(app) {
                 }
                 else {
                     req.user = userObject;
+                    // TODO: Move userCollection transformation to function
+                    req.userCollection = "user:" + userObject.user_id;
                     next('route');
                 }
             }
