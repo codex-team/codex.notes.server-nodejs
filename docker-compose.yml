@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    environment:
+      AUTH: "no"
+      USER: root
+      PASS: root
+  node:
+    build: build/node_image
+    ports:
+      - 3000:3000
+      - 8070:8070
+    links:
+      - mongodb
+    volumes:
+      - "./notes-server:/var/www"
+    working_dir: /var/www/
