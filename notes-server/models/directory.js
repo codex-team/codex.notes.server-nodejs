@@ -1,6 +1,5 @@
 'use strict';
 
-let collections = require('../config/collections');
 let auth = require('../modules/auth');
 let mongo = require('../modules/database');
 
