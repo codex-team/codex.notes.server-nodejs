@@ -18,5 +18,4 @@ services:
       - mongodb
     volumes:
       - "./notes-server:/var/www"
-      - "./notes-server/node_modules:/var/www/node_modules"
     working_dir: /var/www/
