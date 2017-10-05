@@ -103,6 +103,18 @@ let mongo = (function () {
         });
     };
 
+    let dropDatabase = async function (name) {
+        return connection.then(function (db) {
+            return db.dropDatabase(name);
+        });
+    };
+
+    let listCollections = async function () {
+        return connection.then(function (db) {
+            return db.listCollections().toArray();
+        })
+    };
+
     return {
         findOne : findOne,
         insertOne : insertOne,
@@ -112,7 +124,9 @@ let mongo = (function () {
         updateOne: updateOne,
         updateMany: updateMany,
         remove: remove,
-        createCollection: createCollection
+        createCollection: createCollection,
+        dropDatabase: dropDatabase,
+        listCollections: listCollections
     };
 })();
 
